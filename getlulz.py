@@ -20,14 +20,16 @@ usock.close()
 #парсим HTML на предмет URL'ов
 
 parsed = regexp.findall(data)
+#мутим большой стринг с датами
 data = ""
+# пройдемся-ка по массиву и посмотрим, не оканчиваются ли его элементы на нужные нам символы
 for i in parsed:
     i = i.strip('"').strip("'")
-    if i[-3:] in regexp2:
-        data = data + '\n\n\n <input type="text" value=' + i + '><br><img src="' + i + '"><br><br>\n'
+    if i[-3:] in regexp2: # и что, сука характерно, оканчиваются
+        data = data + '\n\n\n <input type="text" value=' + i + '><br><img src="' + i + '"><br><br>\n' # заливаем это все в html 
 
 
-
+#открываем файл, бла-бла-бла
 f = open('./html.html', 'w')
 f.write(data)
 f.close
