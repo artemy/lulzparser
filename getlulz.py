@@ -6,8 +6,7 @@
 #		каждая функция должна отдавать сипсок со ссылками
 import urllib2,re,sys
 
-href = re.compile('''["']http://[^+]*?['"]''') # регексп для логов jabber.ru
-filetypes = re.compile('.*(png|jpg|jpeg|gif|pdf)$') # регексп нужных расширений файлов
+jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
 dvach_r = re.compile('''["']/c/src/[^+]*?['"]''') # регексп для двача
 
 def uniq(seq):
@@ -49,12 +48,10 @@ def dvach():
 def jru():
 	result=[]
 	data=getdata()
-	data_re = href.findall(data)
+	data_re = jru_regexp.findall(data)
 	data_uniq = uniq(data_re)
 	data_strip = mystrip(data_uniq)
-	for i in data_strip:
-		if filetypes.match(i):
-			result.append(i)
+	result=data_strip
 	return result
 
 
