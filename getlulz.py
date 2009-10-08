@@ -26,7 +26,7 @@ if __name__=="__main__":
 		type=2
 # регекспы
 jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
-dvach_r = re.compile('''["']/c/src/[^+]*?['"]''') # регексп для двача
+dvach_r = re.compile('''["']*/src/[^+]*?['"]''') # регексп для двача
 
 def uniq(seq):
 # функция uniq() находит совпадающие элементы в массиве, и выдает новый массив, без совпадающих элементов
@@ -101,12 +101,11 @@ getdata(url)
 # а еще..
 
 if type==1:
-	if file:
-		to_file(jru(),file)
-	else:
-		to_stdout(jru())
+	tmp=jru()
 elif type==2:
-	if file:
-		to_file(dvach(),file)
-	else:
-		to_stdout(dvach())
+	tmp=dvach()
+
+if file:
+	to_file(tmp,file)
+else:
+	to_stdout(tmp)
