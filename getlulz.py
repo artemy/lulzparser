@@ -66,8 +66,9 @@ def mentach():
 # по идее должна работать со всеми wakaba-based имиджбордами
 	result=[]
 	data_re = wakaba_r.findall(raw)
-	data_uniq = uniq(data_re)
-	data_strip = mystrip(data_uniq)
+# Это ментач. Сначала mystrip(), а потом uniq()!
+	data_uniq = mystrip(data_re)
+	data_strip = uniq(data_uniq)
 	# так надо. попробуйте убрать -- получите говно, а не ссылки
 	for i in data_strip:
 		result.append("http://02-ch.ru"+i)
