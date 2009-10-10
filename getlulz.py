@@ -11,6 +11,7 @@ if __name__=="__main__":
 	parser.add_option("-u", "--url", dest="url", type="string",help="Url of page to parse")
 	parser.add_option("-1", "--jru", dest="jru",action="store_true",help="Link is jabber.ru HTML log")
 	parser.add_option("-2", "--dvach", dest="dvach",action="store_true",help="Link is 2-ch.ru thread")
+	parser.add_option("-3", "--nullchan", dest="nullchan",action="store_true",help="Link is 0chan.ru thread")
 	parser.add_option("-f", "--file", dest="file", type="string",help="Use this, if you want HTML output.")
 	# тынц
 	(options, args) = parser.parse_args()
@@ -24,9 +25,11 @@ if __name__=="__main__":
 		type=1
 	elif options.dvach:
 		type=2
+	elif options.nullchan:
+		type=3
 # регекспы
 jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
-dvach_r = re.compile('''["']*/src/[^+]*?['"]''') # регексп для двача
+dvach_r = re.compile('''["']*/*/src/[^+]*?['"]''') # регексп для двача
 
 def uniq(seq):
 # функция uniq() находит совпадающие элементы в массиве, и выдает новый массив, без совпадающих элементов
@@ -67,6 +70,18 @@ def dvach():
 	for i in data_strip:
 		result.append("http://2-ch.ru"+i)
 	return result
+	
+def nullchan():
+# трепанирует raw и извлекает ссылки на картинки.
+# по идее должна работать со всеми wakaba-based имиджбордами
+	result=[]
+	data_re = dvach_r.findall(raw)
+	data_uniq = uniq(data_re)
+	data_strip = mystrip(data_uniq)
+	# так надо. попробуйте убрать -- получите говно, а не ссылки
+	for i in data_strip:
+		result.append("http://0chan.ru"+i)
+	return result
 
 def jru():
 # трепанирует raw и извлекает ссылки на картинки.
@@ -104,6 +119,8 @@ if type==1:
 	tmp=jru()
 elif type==2:
 	tmp=dvach()
+elif type==3:
+	tmp=nullchan()
 
 if file:
 	to_file(tmp,file)
