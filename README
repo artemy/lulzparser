@@ -1,1 +1,20 @@
-Тут должна быть инструкция по использованию
+INSTALL
+
+chmod +x getlulz.py
+
+SUPPORTED
+
+* jabber.ru logs
+* 2-ch.ru
+* 0chan.ru
+* other Wakaba imageboards (not tested)
+
+RUN
+
+./getlulz.py -u http://.../thread.html
+
+PUT TO HTML
+
+./getlulz.py -u http://.../thread.html -f output.html
+
+PROFIT!
