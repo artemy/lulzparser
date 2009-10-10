@@ -9,25 +9,15 @@ import urllib2, re, sys, optparse
 if __name__=="__main__":
 	parser = optparse.OptionParser("usage: %prog [-u http://foo.com/bar.html] [-1] [-2] [-w out.html]")
 	parser.add_option("-u", "--url", dest="url", type="string",help="Url of page to parse")
-	parser.add_option("-1", "--jru", dest="jru",action="store_true",help="Link is jabber.ru HTML log")
-	parser.add_option("-2", "--dvach", dest="dvach",action="store_true",help="Link is 2-ch.ru thread")
-	parser.add_option("-3", "--nullchan", dest="nullchan",action="store_true",help="Link is 0chan.ru thread")
 	parser.add_option("-f", "--file", dest="file", type="string",help="Use this, if you want HTML output.")
 	# тынц
 	(options, args) = parser.parse_args()
 	# url для getdata(), file для to_file()
 	global url,file
 	url,file=options.url,options.file
-	# проверяем, что юзер собрался парсить
-	if (options.jru and options.dvach):
-		parser.error("You can specify only one argument: [-1] or [-1]. See help.")
-	elif options.jru:
-		type=1
-	elif options.dvach:
-		type=2
-	elif options.nullchan:
-		type=3
+	
 # регекспы
+explode_url = re.compile(r'[\w\-\.]+\.*')
 jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
 wakaba_r = re.compile('''["']*/[^+]/src/[^+]*?['"]''') # регексп для вакабы
 
@@ -114,7 +104,10 @@ def to_file(data_arr,filename):
 getdata(url)
 # командный центр слушает вас! # "командный" с одной "Н", БЛДЖАД
 # а еще..
-
+domain = explode_url.findall(url)[1]
+if (domain=="chatlogs.jabber.ru" or domain=="www.chatlogs.jabber.ru"): type=1
+if (domain=="2-ch.ru" or domain=="www.2-ch.ru"): type=2
+if (domain=="0chan.ru" or domain=="www.0chan.ru"): type=3
 if type==1:
 	tmp=jru()
 elif type==2:
