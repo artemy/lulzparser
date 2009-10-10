@@ -29,7 +29,7 @@ if __name__=="__main__":
 		type=3
 # регекспы
 jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
-dvach_r = re.compile('''["']*/*/src/[^+]*?['"]''') # регексп для двача
+wakaba_r = re.compile('''["']*/[^+]/src/[^+]*?['"]''') # регексп для вакабы
 
 def uniq(seq):
 # функция uniq() находит совпадающие элементы в массиве, и выдает новый массив, без совпадающих элементов
@@ -63,7 +63,7 @@ def dvach():
 # трепанирует raw и извлекает ссылки на картинки.
 # по идее должна работать со всеми wakaba-based имиджбордами
 	result=[]
-	data_re = dvach_r.findall(raw)
+	data_re = wakaba_r.findall(raw)
 	data_uniq = uniq(data_re)
 	data_strip = mystrip(data_uniq)
 	# так надо. попробуйте убрать -- получите говно, а не ссылки
@@ -75,7 +75,7 @@ def nullchan():
 # трепанирует raw и извлекает ссылки на картинки.
 # по идее должна работать со всеми wakaba-based имиджбордами
 	result=[]
-	data_re = dvach_r.findall(raw)
+	data_re = wakaba_r.findall(raw)
 	data_uniq = uniq(data_re)
 	data_strip = mystrip(data_uniq)
 	# так надо. попробуйте убрать -- получите говно, а не ссылки
