@@ -19,7 +19,7 @@ if __name__=="__main__":
 # регекспы
 explode_url = re.compile(r'[\w\-\.]+\.*')
 jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
-wakaba_r = re.compile('''["']*/[^+]/src/[^+]*?['"]''') # регексп для вакабы
+wakaba_r = re.compile('''["']*/[a-z]+/src/[^+]*?['"]''') # регексп для вакабы
 
 def uniq(seq):
 # функция uniq() находит совпадающие элементы в массиве, и выдает новый массив, без совпадающих элементов
