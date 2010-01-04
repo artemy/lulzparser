@@ -20,6 +20,8 @@ if __name__=="__main__":
 explode_url = re.compile(r'[\w\-\.]+\.*')
 jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
 wakaba_r = re.compile('''["']*/[a-z-_]+/src/[^+]*?['"]''') # регексп для вакабы
+nyamo_r = re.compile('''["']*/svp/(?!thumb/).*?['"]''') # регексп для nyamo.su
+
 
 def uniq(seq):
 # функция uniq() находит совпадающие элементы в массиве, и выдает новый массив, без совпадающих элементов
@@ -60,7 +62,21 @@ def dvach():
 	for i in data_strip:
 		result.append("http://2-ch.ru"+i)
 	return result
-	
+
+
+
+def nyamo():
+# трепанирует raw и извлекает ссылки на картинки.
+# по идее должна работать со всеми wakaba-based имиджбордами
+	result=[]
+	data_re = nyamo_r.findall(raw)
+	data_uniq = uniq(data_re)
+	data_strip = mystrip(data_uniq)
+	# так надо. попробуйте убрать -- получите говно, а не ссылки
+	for i in data_strip:
+		result.append("http://nyamo.su"+i)
+	return result
+
 def mentach():
 # трепанирует raw и извлекает ссылки на картинки.
 # по идее должна работать со всеми wakaba-based имиджбордами
@@ -123,6 +139,7 @@ if (domain=="chatlogs.jabber.ru" or domain=="www.chatlogs.jabber.ru"): type=1
 if (domain=="2-ch.ru" or domain=="www.2-ch.ru"): type=2
 if (domain=="0chan.ru" or domain=="www.0chan.ru"): type=3
 if (domain=="02-ch.ru" or domain=="www.02-ch.ru"): type=4
+if (domain=="nyamo.su" or domain=="www.nyamo.su"): type=5
 if type==1:
 	tmp=jru()
 elif type==2:
@@ -131,6 +148,8 @@ elif type==3:
 	tmp=nullchan()
 elif type==4:
 	tmp=mentach()
+elif type==5:
+	tmp=nyamo()
 if file:
 	to_file(tmp,file)
 else:
