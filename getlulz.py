@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*-coding: utf-8 -*-
 #       РАЗРАЗИ МЕНЯ КРОТЫ!!!11111
-#       html.image.parser 0.1
+#       html.image.parser 0.100500
 #       by artemy_m, edigaryev
 #		каждая функция должна отдавать список сисек^W ссылок
 import urllib2, re, sys, optparse
@@ -16,11 +16,12 @@ if __name__=="__main__":
 	global url,file
 	url,file=options.url,options.file
 	
-# регекспы
+# регэкспы
 explode_url = re.compile(r'[\w\-\.]+\.*')
 jru_regexp = re.compile('a href="(.*(?:jpg|jpeg|png|gif|pdf))"')
 wakaba_r = re.compile('''["']*/[a-z-_]+/src/[^+]*?['"]''') # регексп для вакабы
 nyamo_r = re.compile('''["']*/svp/(?!thumb/).*?['"]''') # регексп для nyamo.su
+krautchan_r = re.compile('''["']*/download/.*?['"]''')
 
 
 def uniq(seq):
@@ -35,7 +36,7 @@ def mystrip(arr):
 # функция mystrip. Принимает в качестве аргумента массив, содержащий выдранные ссылки на изображение. Возвращает массив с элементами без символа ковычек (")
 # например, есть массив arr['"http://foo/bar.jpg"','"http://example.com/foo/bar.png"']
 # обработав данный массив, функция возвратит следующий массив: result['http://foo/bar.jpg','http://example.com/foo/bar.png']
-	ret=[]
+	ret = []
 	for i in arr:
 		i = i.strip('"').strip("'")
 		ret.append(i)
@@ -46,6 +47,7 @@ def getdata(url):
 	global raw
 	usock = urllib2.urlopen(url)
 	raw = usock.read()
+	# print raw
 	usock.close()
 #
 # вот тут начинаются функции, которые парсят HTML. Все функции возвращают массив со ссылками.
@@ -54,7 +56,7 @@ def getdata(url):
 def dvach():
 # трепанирует raw и извлекает ссылки на картинки.
 # по идее должна работать со всеми wakaba-based имиджбордами
-	result=[]
+	result = []
 	data_re = wakaba_r.findall(raw)
 	data_uniq = mystrip(data_re)
 	data_strip = uniq(data_uniq)
@@ -68,7 +70,7 @@ def dvach():
 def nyamo():
 # трепанирует raw и извлекает ссылки на картинки.
 # по идее должна работать со всеми wakaba-based имиджбордами
-	result=[]
+	result = []
 	data_re = nyamo_r.findall(raw)
 	data_uniq = uniq(data_re)
 	data_strip = mystrip(data_uniq)
@@ -77,10 +79,22 @@ def nyamo():
 		result.append("http://nyamo.su"+i)
 	return result
 
+def krautchan():
+# трепанирует raw и извлекает ссылки на картинки.
+# по идее должна работать со всеми wakaba-based имиджбордами
+	result = []
+	data_re = krautchan_r.findall(raw)
+	data_uniq = uniq(data_re)
+	data_strip = mystrip(data_uniq)
+	# так надо. попробуйте убрать -- получите говно, а не ссылки
+	for i in data_strip:
+		result.append("http://krautchan.net"+i)
+	return result
+
 def mentach():
 # трепанирует raw и извлекает ссылки на картинки.
 # по идее должна работать со всеми wakaba-based имиджбордами
-	result=[]
+	result = []
 	data_re = wakaba_r.findall(raw)
 # Это ментач. Сначала mystrip(), а потом uniq()!
 	data_uniq = mystrip(data_re)
@@ -94,7 +108,7 @@ def mentach():
 def nullchan():
 # трепанирует raw и извлекает ссылки на картинки.
 # по идее должна работать со всеми wakaba-based имиджбордами
-	result=[]
+	result = []
 	data_re = wakaba_r.findall(raw)
 	data_uniq = mystrip(data_re)
 	data_strip = uniq(data_uniq)
@@ -106,7 +120,7 @@ def nullchan():
 def jru():
 # трепанирует raw и извлекает ссылки на картинки.
 # http://chatlogs.jabber.ru/
-	result=[]
+	result = []
 	data_re = jru_regexp.findall(raw)
 	data_uniq = uniq(data_re)
 	data_strip = mystrip(data_uniq)
@@ -122,24 +136,29 @@ def to_stdout(data_arr):
 		print i
 		
 def to_file(data_arr,filename):
-	html=""
+	html = ""
+	# верх
+	html += '<html><head><title>lulzparser</title><head><body>\n\n<h1>parsed by <a href="http://github.com/artemy/lulzparser/">lulparser</a></h1>\n\n'
 	for i in data_arr:
-		html += '\n\n\n <input type="text" value=' + i + '><br><img src="' + i + '"><br><br>\n'
+		# запихиваем картинки внутрь HTML страницы
+		html += '<p><input type="text" value="' + i + '" size="' + str(len(i)) + '"></p>\n<p><img src="' + i + '"></p>\n\n'
+	# низ
+	html += '</body></html>'
 	f = open('./'+filename, 'w')
 	f.write(html)
 	f.close
 
 # наполняем переменную raw говном и, возможно, лулзами
-# кстати, между возможно и лулзами нужна запятая? # нужна, я гарантирую это
 getdata(url)
-# командный центр слушает вас! # "командный" с одной "Н", БЛДЖАД
+# командный центр слушает вас!
 # а еще..
 domain = explode_url.findall(url)[1]
-if (domain=="chatlogs.jabber.ru" or domain=="www.chatlogs.jabber.ru"): type=1
-if (domain=="2-ch.ru" or domain=="www.2-ch.ru"): type=2
-if (domain=="0chan.ru" or domain=="www.0chan.ru"): type=3
-if (domain=="02-ch.ru" or domain=="www.02-ch.ru"): type=4
-if (domain=="nyamo.su" or domain=="www.nyamo.su"): type=5
+if (domain == "chatlogs.jabber.ru" or domain == "www.chatlogs.jabber.ru"): type = 1
+if (domain == "2-ch.ru" or domain == "www.2-ch.ru"): type = 2
+if (domain == "0chan.ru" or domain == "www.0chan.ru"): type = 3
+if (domain == "02-ch.ru" or domain == "www.02-ch.ru"): type = 4
+if (domain == "nyamo.su" or domain == "www.nyamo.su"): type = 5
+if (domain == "krautchan.net" or domain == "www.krautchan.net"): type = 6
 if type==1:
 	tmp=jru()
 elif type==2:
@@ -150,6 +169,8 @@ elif type==4:
 	tmp=mentach()
 elif type==5:
 	tmp=nyamo()
+elif type==6:
+	tmp=krautchan()
 if file:
 	to_file(tmp,file)
 else:
