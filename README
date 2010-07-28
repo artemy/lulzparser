@@ -4,20 +4,16 @@ chmod +x getlulz.py
 
 SUPPORTED
 
-* jabber.ru logs
+* jabber.ru logs (chatlogs.jabber.ru)
 * 2-ch.ru
 * 0chan.ru
-* 02-ch.ru
-* nyamo.su
 * krautchan.net
 * other Wakaba imageboards (support can be easily added)
 
-RUN
+Standart mode
 
-./getlulz.py -u http://.../thread.html
+./getlulz.py http://.../thread.html
 
-PUT TO HTML
+Generate HTML document
 
-./getlulz.py -u http://.../thread.html -f output.html
-
-PROFIT!
+./getlulz.py -f output.html http://.../thread.html
