@@ -2,18 +2,18 @@ INSTALL
 
 chmod +x getlulz.py
 
-SUPPORTED
+SUPPORTED IMAGE SOURCES
 
 * jabber.ru logs (chatlogs.jabber.ru)
-* 2-ch.ru
-* 0chan.ru
-* krautchan.net
-* other Wakaba imageboards (support can be easily added)
+* 4chan.org
+* 2ch.so
+* 0-chan.ru
+* other Wakaba imageboards (it might work, but if it doesn't, then you can add rules/prepends for the specific imageboard quite easily)
 
-Standart mode
+Standard mode
 
 ./getlulz.py http://.../thread.html
 
 Generate HTML document
 
-./getlulz.py -f output.html http://.../thread.html
+./getlulz.py -o output.html http://.../thread.html
